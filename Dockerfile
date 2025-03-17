@@ -4,13 +4,15 @@
 
 FROM python:3.10.8-slim-buster
 
-RUN apt update && apt upgrade -y
-RUN apt install git -y
+RUN apt update && apt upgrade -y && apt install -y git
+
 COPY requirements.txt /requirements.txt
 
-RUN cd /
-RUN pip3 install -U pip && pip3 install -U -r requirements.txt
-RUN mkdir /VJ-Post-Search-Bot
+RUN pip3 install --no-cache-dir -U pip && pip3 install --no-cache-dir -U -r /requirements.txt
+
 WORKDIR /VJ-Post-Search-Bot
 COPY . /VJ-Post-Search-Bot
-CMD gunicorn app:app & python3 main.py
+
+EXPOSE 8080
+
+CMD ["sh", "-c", "gunicorn -b 0.0.0.0:8080 app:app & python3 main.py"]
